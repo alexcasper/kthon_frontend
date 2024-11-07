@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Katathon Leaderboard</title>
+    <link rel="stylesheet" href="BOOTSTRA.386/dist/css/bootstrap.min.css" />
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="BOOTSTRA.386/dist/js/bootstrap.js"></script>
+  </head>
+  <body>
+    <h1>katathon leaderboard</h1>
+    <h2><a href='players.html'>players</a></h2>
+    <br />
+    <div>
+    <div id="content"></div>
+      
+    </div>
+
+
+
+
+    <!-- Insert this script at the bottom of the HTML, but before you use any Firebase services -->
+    <script type="module">
+      import { initializeApp } from 'https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js'
+      import { getFirestore,doc, onSnapshot,query,collection,where } from 'https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js'
+      
+
+const firebaseConfig = {
+  apiKey: "AIzaSyC37wliaMSjMeQfWlFPmZOkKUEeMhweHsI",
+  authDomain: "lciotchallenge.firebaseapp.com",
+  projectId: "lciotchallenge",
+  storageBucket: "lciotchallenge.firebasestorage.app",
+  messagingSenderId: "431789717065",
+  appId: "1:431789717065:web:7741c5745fa4525bf2b198"
+}; 
+  
+      // Initialize Firebase
+      const app = initializeApp(firebaseConfig);
+      const db = getFirestore(app);
+      // Reference to the content div
+const contentDiv = document.getElementById('content');
+
+// Listen for realtime updates
+
+    
+    const c = collection(db, "teams");
+
+    const unsub = onSnapshot(c, (querySnapshot) => {
+        contentDiv.innerHTML = ''; // Clear existing content
+        contentDiv.style = "display: flex;flex-direction: column;"
+        const teams = [];
+        querySnapshot.forEach((doc)=> {
+        const data = doc.data()
+        teams.push(data)
+        });
+        let sorted = teams.sort((a,b)=>b.score-a.score)
+        for (let team of teams) {
+
+        const docElement = document.createElement('div');
+        docElement.classList.add('row','mb-3')
+        docElement.id = team.id
+        docElement.innerHTML = `<div class="col-sm-4 themed-grid-col">${team.name || `team ${team.id}` }</div><div class="col-sm-4 themed-grid-col">${team.score}</div>`;
+        contentDiv.appendChild(docElement);
+        }
+    });
+
+
+    </script>
+    
+  </body>
+</html>
